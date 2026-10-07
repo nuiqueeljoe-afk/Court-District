@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit shoe{% else %}Add shoe{% endif %} | Court District{% endblock %}
+{% block content %}
+<section class="form-page section-wrap">
+  <a class="back-link" href="{{ url_for('admin_index') }}">← Back to inventory</a>
+  <p class="eyebrow"><span></span> STAFF / CATALOG</p>
+  <h1>{% if editing %}Edit this pair{% else %}Add to the lineup{% endif %}<span class="heading-period">.</span></h1>
+  <form class="shoe-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="form-grid">
+      <label>Shoe name<input name="name" maxlength="80" value="{{ shoe.name if shoe else '' }}" required></label>
+      <label>Brand<input name="brand" maxlength="50" value="{{ shoe.brand if shoe else '' }}" required></label>
+      <label>Category<select name="category" required>{% for category in ['Indoor', 'Outdoor', 'Apparel'] %}<option value="{{ category }}" {% if shoe and shoe.category == category %}selected{% endif %}>{{ category }}</option>{% endfor %}</select></label>
+      <label>Price (USD)<input name="price" type="number" min="0" step="0.01" value="{{ shoe.price if shoe else '' }}" required></label>
+      <label>Sizes available<input name="sizes" maxlength="100" placeholder="7, 8, 9, 10, 11" value="{{ shoe.sizes if shoe else '' }}" required></label>
+      <label>Stock quantity<input name="stock" type="number" min="0" step="1" value="{{ shoe.stock if shoe else '0' }}" required></label>
+      <label class="form-span">Image URL<input name="image_url" type="url" placeholder="https://..." value="{{ shoe.image_url if shoe else '' }}" required></label>
+      <label class="form-span">Description<textarea name="description" maxlength="400" rows="4" required>{{ shoe.description if shoe else '' }}</textarea></label>
+    </div>
+    <div class="form-actions"><a class="text-button" href="{{ url_for('admin_index') }}">Cancel</a><button class="button" type="submit">{% if editing %}Save changes{% else %}Add shoe{% endif %} <span>↗</span></button></div>
+  </form>
+</section>
+{% endblock %}

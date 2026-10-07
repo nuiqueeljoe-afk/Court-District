@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Checkout | Court District{% endblock %}
+{% block content %}
+<section class="checkout-page section-wrap">
+  <a class="back-link" href="{{ url_for('cart') }}">← Back to your bag</a>
+  <div class="section-heading"><div><p class="eyebrow"><span></span> ALMOST ON THE COURT</p><h1>Checkout<span class="heading-period">.</span></h1></div></div>
+  <div class="checkout-layout">
+    <form class="checkout-form" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="customer-name">Name for the order</label><input id="customer-name" name="customer_name" maxlength="80" value="{{ customer_name }}" required>
+      <label for="delivery-method">Delivery and payment</label><select id="delivery-method" name="delivery_method" required><option value="Store pickup">Store pickup · Pay at pickup</option><option value="Cash on delivery">Cash on delivery</option></select>
+      <label for="address">Delivery address <span>Required for cash on delivery</span></label><textarea id="address" name="address" rows="3" maxlength="300" placeholder="Street, barangay, city"></textarea>
+      <p class="payment-note">This class-project checkout records an order only. No online payment or card details are collected.</p>
+      <button class="button place-order" type="submit">Place order · ${{ '%.2f'|format(subtotal) }} <span>↗</span></button>
+    </form>
+    <aside class="checkout-summary"><p class="eyebrow"><span></span> IN YOUR BAG</p>
+      {% for item in items %}<div class="checkout-line"><img src="{{ item.image_url }}" alt=""><span><strong>{{ item.name }}</strong><small>US {{ item.size }} · Qty {{ item.quantity }}</small></span><b>${{ '%.2f'|format(item.price * item.quantity) }}</b></div>{% endfor %}
+      <div class="checkout-total"><span>Total due at pickup or delivery</span><strong>${{ '%.2f'|format(subtotal) }}</strong></div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

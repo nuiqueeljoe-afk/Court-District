@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Your bag | Court District{% endblock %}
+{% block content %}
+<section class="cart-page section-wrap">
+  <div class="section-heading"><div><p class="eyebrow"><span></span> READY FOR THE NEXT RUN</p><h1>Your bag<span class="heading-period">.</span></h1></div><p>{{ items|length }} pair{% if items|length != 1 %}s{% endif %} in your bag</p></div>
+  {% if items %}
+  <div class="cart-layout">
+    <div class="cart-list">
+      {% for item in items %}
+      <article class="cart-item">
+        <img src="{{ item.image_url }}" alt="{{ item.brand }} {{ item.name }}">
+        <div class="cart-item-info"><p class="product-brand">{{ item.brand }}</p><h2>{{ item.name }}</h2><p>Size US {{ item.size }} · ${{ '%.2f'|format(item.price) }}</p><p class="stock-note">{{ item.stock }} in stock</p></div>
+        <div class="cart-item-controls">
+          <form action="{{ url_for('update_cart_item', shoe_id=item.shoe_id) }}" method="post" class="quantity-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="size" value="{{ item.size }}"><label class="sr-only" for="cart-quantity-{{ loop.index }}">Quantity for {{ item.name }}</label><input id="cart-quantity-{{ loop.index }}" name="quantity" type="number" min="1" max="{{ item.stock }}" value="{{ item.quantity }}" required><button type="submit" class="text-button">Update</button></form>
+          <strong class="line-total">${{ '%.2f'|format(item.price * item.quantity) }}</strong>
+          <form action="{{ url_for('remove_cart_item', shoe_id=item.shoe_id) }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="size" value="{{ item.size }}"><button type="submit" class="delete-button">Remove</button></form>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <aside class="order-summary"><p class="eyebrow"><span></span> ORDER SUMMARY</p><div><span>Subtotal</span><strong>${{ '%.2f'|format(subtotal) }}</strong></div><p>Shipping and payment are arranged at checkout.</p><a class="button checkout-button" href="{{ url_for('checkout') }}">Continue to checkout <span>↗</span></a><a class="continue-shopping" href="{{ url_for('index') }}#shop">Continue shopping</a></aside>
+  </div>
+  {% else %}<div class="empty-state"><p>Your bag is empty.</p><a class="service-link" href="{{ url_for('index') }}#shop">Browse the lineup ↗</a></div>{% endif %}
+</section>
+{% endblock %}

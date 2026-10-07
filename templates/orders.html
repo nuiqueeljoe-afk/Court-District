@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Your orders | Court District{% endblock %}
+{% block content %}
+<section class="orders-page section-wrap">
+  <div class="section-heading"><div><p class="eyebrow"><span></span> YOUR COURT DISTRICT ORDERS</p><h1>Order history<span class="heading-period">.</span></h1></div></div>
+  {% if orders %}<div class="orders-list">{% for order in orders %}<a class="order-row" href="{{ url_for('order_detail', order_id=order.id) }}"><span><strong>{{ order.order_number }}</strong><small>{{ order.created_at }}</small></span><span>{{ order.delivery_method }}</span><span>{{ order.status }}</span><strong>${{ '%.2f'|format(order.total) }}</strong><span aria-hidden="true">↗</span></a>{% endfor %}</div>
+  {% else %}<div class="empty-state"><p>No orders yet. Your next pair is waiting.</p><a class="service-link" href="{{ url_for('index') }}#shop">Shop the lineup ↗</a></div>{% endif %}
+</section>
+{% endblock %}

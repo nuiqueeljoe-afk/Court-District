@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} | Court District{% endblock %}
+{% block content %}
+<section class="error-page section-wrap"><p class="eyebrow"><span></span> COURT DISTRICT / {{ code }}</p><h1>{{ code }}<span class="heading-period">.</span></h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">Back to the storefront ↗</a></section>
+{% endblock %}

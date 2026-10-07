@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ece9e1">
+  <title>{% block title %}Court District | Made for the run{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="{{ url_for('index') }}" aria-label="Court District home">
+      <span class="wordmark-mark">CD</span><span>COURT<br>DISTRICT</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="{{ url_for('index') }}#shop">The lineup</a>
+      <a href="{{ url_for('index') }}#services">In-store</a>
+      {% if current_user and current_user.role == 'customer' %}
+        <a href="{{ url_for('wishlist') }}">Wishlist</a>
+        <a href="{{ url_for('orders') }}">Orders</a>
+      {% endif %}
+    </nav>
+    <div class="header-actions">
+      {% if current_user %}
+        {% if current_user.role == 'customer' %}<a class="header-shortcut" href="{{ url_for('wishlist') }}">Wishlist</a><a class="bag-link" href="{{ url_for('cart') }}">Bag <span>{{ cart_count }}</span></a>{% endif %}
+        {% if current_user.role == 'admin' %}<a class="nav-admin" href="{{ url_for('admin_index') }}">Inventory</a>{% endif %}
+        <span class="user-greeting">{{ current_user.name.split(' ')[0] }}</span>
+        <form action="{{ url_for('logout') }}" method="post" class="inline-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="text-button" type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a class="text-button login-link" href="{{ url_for('login') }}">Log in</a>
+        <a class="button button-small" href="{{ url_for('register') }}">Join the district <span aria-hidden="true">↗</span></a>
+      {% endif %}
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-stack" role="status">
+      {% for category, message in messages %}<p class="flash flash-{{ category }}">{{ message }}</p>{% endfor %}
+    </div>{% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="{{ url_for('index') }}">COURT DISTRICT<span>PLAY YOUR WAY IN.</span></a>
+    <p>Good shoes. Better runs. <span>© 2026 Court District</span></p>
+    <a href="{{ url_for('index') }}#shop">Back to the lineup ↑</a>
+  </footer>
+</body>
+</html>

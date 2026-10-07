@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="hero-image" role="img" aria-label="Basketball shoes ready for the court"></div>
+  <div class="hero-content">
+    <p class="eyebrow hero-eyebrow"><span></span> INDEPENDENT BASKETBALL GOODS</p>
+    <h1>Court<br><em>District.</em></h1>
+    <p class="hero-copy">The right pair changes everything. Find your next game-day favorite, picked for players who live for the run.</p>
+    <a class="button button-light" href="#shop">Explore the lineup <span aria-hidden="true">↓</span></a>
+  </div>
+  <div class="hero-note"><span>01 / 03</span><span>BUILT AROUND THE GAME</span></div>
+  <div class="hero-stamp" aria-hidden="true">FIND<br>YOUR<br>FOOTING</div>
+</section>
+
+<section class="ticker" aria-label="Shop specialties"><div>COURT-TESTED <i>✳</i> PLAYER-FOCUSED <i>✳</i> READY FOR THE NEXT RUN <i>✳</i> COURT-TESTED <i>✳</i> PLAYER-FOCUSED <i>✳</i></div></section>
+
+<section class="shop-section section-wrap" id="shop">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span></span> FIND YOUR NEXT PAIR</p><h2>The lineup<span class="heading-period">.</span></h2></div>
+    <p>From open gym to game point. Shop a considered rotation of basketball footwear for every kind of run.</p>
+  </div>
+  {% if shoes %}
+  <div class="product-grid">
+    {% for shoe in shoes %}
+    <article class="product-card">
+      <a class="product-image-wrap" href="{{ shoe.image_url }}" target="_blank" rel="noopener" aria-label="View {{ shoe.name }} image">
+        <img class="product-image" src="{{ shoe.image_url }}" alt="{{ shoe.brand }} {{ shoe.name }} basketball shoe" loading="lazy">
+        <span class="product-tag">{{ shoe.category }}</span>
+        {% if shoe.stock == 0 %}<span class="sold-out">OUT OF STOCK</span>{% endif %}
+      </a>
+      <div class="product-meta"><div><p class="product-brand">{{ shoe.brand }}</p><h3>{{ shoe.name }}</h3></div><span class="product-price">${{ '%.2f'|format(shoe.price) }}</span></div>
+      <p class="product-description">{{ shoe.description }}</p>
+      <div class="product-actions">
+        {% if current_user and current_user.role == 'customer' %}
+        <form action="{{ url_for('add_to_cart', shoe_id=shoe.id) }}" method="post" class="buy-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label class="sr-only" for="size-{{ shoe.id }}">Choose a size for {{ shoe.name }}</label>
+          <select id="size-{{ shoe.id }}" name="size" required>{% for available_size in shoe.sizes.split(',') %}<option value="{{ available_size.strip() }}">US {{ available_size.strip() }}</option>{% endfor %}</select>
+          <label class="sr-only" for="quantity-{{ shoe.id }}">Quantity</label>
+          <input id="quantity-{{ shoe.id }}" name="quantity" type="number" min="1" max="{{ shoe.stock if shoe.stock > 0 else 1 }}" value="1" required>
+          <button class="button add-to-bag" type="submit" {% if shoe.stock == 0 %}disabled{% endif %}>{% if shoe.stock == 0 %}Sold out{% else %}Add to bag{% endif %}</button>
+        </form>
+        <form action="{{ url_for('toggle_favorite', shoe_id=shoe.id) }}" method="post" class="wishlist-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="next" value="{{ request.full_path }}">
+          <button class="save-button {% if shoe.id in favorite_ids %}is-saved{% endif %}" type="submit" aria-label="{% if shoe.id in favorite_ids %}Remove {{ shoe.name }} from wishlist{% else %}Add {{ shoe.name }} to wishlist{% endif %}" title="{% if shoe.id in favorite_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">{% if shoe.id in favorite_ids %}♥{% else %}♡{% endif %}</button>
+        </form>
+        {% elif not current_user %}<a class="button add-to-bag" href="{{ url_for('login') }}">Log in to shop <span aria-hidden="true">↗</span></a>{% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}<p class="empty-state">The lineup is taking shape. Check back soon.</p>{% endif %}
+</section>
+
+<section class="services-section" id="services">
+  <div class="services-image" role="img" aria-label="Basketball court ready for a pickup game"></div>
+  <div class="services-content"><p class="eyebrow"><span></span> MORE THAN A SHOE WALL</p><h2>Made for<br>the <em>whole</em> run.</h2><p>Find your fit, get a feel for the floor, and head back out ready to play. Our crew is here for the details that make a pair yours.</p><a class="service-link" href="#shop">See what's in rotation <span>↗</span></a></div>
+  <div class="service-index">COURT DISTRICT / 01</div>
+</section>
+
+<section class="closing-band"><span>YOUR NEXT RUN STARTS HERE</span><a href="#shop">Find your pair <span>↑</span></a></section>
+{% endblock %}

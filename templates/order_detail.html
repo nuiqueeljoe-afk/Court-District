@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_number }} | Court District{% endblock %}
+{% block content %}
+<section class="order-detail-page section-wrap">
+  <p class="eyebrow"><span></span> ORDER CONFIRMED</p><h1>You're in.<span class="heading-period">.</span></h1>
+  <p class="order-confirmation">Order <strong>{{ order.order_number }}</strong> has been placed. Thanks for shopping Court District.</p>
+  <div class="order-detail-head"><span>{{ order.status }} · {{ order.created_at }}</span><span>{{ order.delivery_method }}</span></div>
+  {% for item in items %}<div class="order-detail-line"><span><strong>{{ item.brand }} {{ item.shoe_name }}</strong><small>US {{ item.size }} · Quantity {{ item.quantity }}</small></span><strong>${{ '%.2f'|format(item.unit_price * item.quantity) }}</strong></div>{% endfor %}
+  {% if order.address %}<p class="delivery-address"><strong>Delivery address</strong><br>{{ order.address }}</p>{% endif %}
+  <div class="order-detail-total"><span>Total</span><strong>${{ '%.2f'|format(order.total) }}</strong></div>
+  <div class="order-detail-actions"><a class="button" href="{{ url_for('orders') }}">View order history</a><a class="continue-shopping" href="{{ url_for('index') }}#shop">Back to the lineup</a></div>
+</section>
+{% endblock %}
