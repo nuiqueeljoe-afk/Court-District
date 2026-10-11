@@ -49,7 +49,7 @@ Small basketball shoe shops need a simple way to show available shoes and keep p
 	DEMO_MODE=1 python app.py
 	```
 
-	Visit <http://127.0.0.1:5000>.
+	Visit court-district-production.up.railway.app
 
 	Demo admin: `manager@courtdistrict.test` / `DistrictDemo1!`
 
